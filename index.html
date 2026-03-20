@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.kahoot.com https://create.kahoot.it; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+
+  <!-- ===== SEO ===== -->
+  <title>Kahoot Class Analyser — Track & Visualise Class Performance</title>
+  <meta name="description" content="Analyse your Kahoot sessions with beautiful charts. Track score trends, question accuracy, player rankings and participation across all your quizzes." />
+  <meta name="keywords" content="kahoot, analyser, class performance, quiz analytics, score trends, education, dashboard" />
+  <meta name="author" content="Kahoot Analyser" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kahoot-analyser.app/" />
+
+  <!-- ===== OPEN GRAPH ===== -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://kahoot-analyser.app/" />
+  <meta property="og:title"       content="Kahoot Class Analyser — Track & Visualise Class Performance" />
+  <meta property="og:description" content="Connect your Kahoot account to visualise score trends, question accuracy, top players and participation across sessions. Beautiful animated dashboard." />
+  <meta property="og:image"       content="https://kahoot-analyser.app/og-image.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale"      content="en_US" />
+  <meta property="og:site_name"   content="Kahoot Analyser" />
+
+  <!-- ===== TWITTER CARD ===== -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Kahoot Class Analyser" />
+  <meta name="twitter:description" content="Beautiful analytics dashboard for your Kahoot sessions — scores, trends, accuracy & more." />
+  <meta name="twitter:image"       content="https://kahoot-analyser.app/og-image.png" />
+
+  <!-- ===== FAVICON SVG ===== -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300f5c8'/%3E%3Cstop offset='50%25' stop-color='%237c3aed'/%3E%3Cstop offset='100%25' stop-color='%23f0037f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230d0d1f'/%3E%3Crect x='10' y='38' width='8' height='16' rx='3' fill='url(%23g1)' opacity='.7'/%3E%3Crect x='22' y='28' width='8' height='26' rx='3' fill='url(%23g1)' opacity='.85'/%3E%3Crect x='34' y='18' width='8' height='36' rx='3' fill='url(%23g1)'/%3E%3Crect x='46' y='24' width='8' height='30' rx='3' fill='url(%23g1)' opacity='.9'/%3E%3Cpolyline points='14,37 26,27 38,17 50,23' fill='none' stroke='%2300f5c8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='14' cy='37' r='2.5' fill='%2300f5c8'/%3E%3Ccircle cx='26' cy='27' r='2.5' fill='%2300f5c8'/%3E%3Ccircle cx='38' cy='17' r='2.5' fill='%2300f5c8'/%3E%3Ccircle cx='50' cy='23' r='2.5' fill='%2300f5c8'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0d1f'/%3E%3Crect x='10' y='38' width='8' height='16' rx='3' fill='%2300f5c8'/%3E%3Crect x='22' y='28' width='8' height='26' rx='3' fill='%237c3aed'/%3E%3Crect x='34' y='18' width='8' height='36' rx='3' fill='%23f0037f'/%3E%3Crect x='46' y='24' width='8' height='30' rx='3' fill='%2300f5c8'/%3E%3C/svg%3E" />
+
+  <!-- ===== THEME COLOR ===== -->
+  <meta name="theme-color" content="#0d0d1f" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+  <!-- ===== BACKGROUND PARTICLES ===== -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoG" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00f5c8"/>
+                <stop offset="50%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#f0037f"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="38" width="8" height="16" rx="3" fill="url(#logoG)" opacity=".7"/>
+            <rect x="22" y="28" width="8" height="26" rx="3" fill="url(#logoG)" opacity=".85"/>
+            <rect x="34" y="18" width="8" height="36" rx="3" fill="url(#logoG)"/>
+            <rect x="46" y="24" width="8" height="30" rx="3" fill="url(#logoG)" opacity=".9"/>
+            <polyline points="14,37 26,27 38,17 50,23" fill="none" stroke="#00f5c8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14" cy="37" r="2.5" fill="#00f5c8"/>
+            <circle cx="26" cy="27" r="2.5" fill="#00f5c8"/>
+            <circle cx="38" cy="17" r="2.5" fill="#00f5c8"/>
+            <circle cx="50" cy="23" r="2.5" fill="#00f5c8"/>
+          </svg>
+        </span>
+        <span class="logo-text">Kahoot <strong>Analyser</strong></span>
+      </div>
+      <div class="header-actions">
+        <div id="userBadge" class="user-badge hidden">
+          <img id="userAvatar" src="" alt="avatar" />
+          <span id="userName"></span>
+        </div>
+        <button id="btnLogin" class="btn btn-primary">Connect with Kahoot</button>
+        <button id="btnLogout" class="btn btn-ghost hidden">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== AUTH SCREEN ===== -->
+  <section id="authScreen" class="screen active">
+    <div class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Analyse your<br />
+          <span class="gradient-text">Kahoot sessions</span>
+        </h1>
+        <p class="hero-sub">
+          Connect your Kahoot account to visualize class performance,<br />
+          track score trends and identify weak topics across sessions.
+        </p>
+        <div class="hero-features">
+          <div class="feature-card"><span>01</span> Score Trends</div>
+          <div class="feature-card"><span>02</span> Top Players</div>
+          <div class="feature-card"><span>03</span> Question Accuracy</div>
+          <div class="feature-card"><span>04</span> Session History</div>
+        </div>
+        <button class="btn btn-primary btn-large" id="btnLoginHero">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          Get Started - Connect Kahoot
+        </button>
+        <p class="hero-note">Uses the official Kahoot API with OAuth 2.0</p>
+      </div>
+      <div class="hero-visual">
+        <div class="mock-chart">
+          <div class="mock-bar" style="--h:65%; --delay:0s"></div>
+          <div class="mock-bar" style="--h:80%; --delay:.1s"></div>
+          <div class="mock-bar" style="--h:55%; --delay:.2s"></div>
+          <div class="mock-bar" style="--h:90%; --delay:.3s"></div>
+          <div class="mock-bar" style="--h:72%; --delay:.4s"></div>
+          <div class="mock-bar" style="--h:85%; --delay:.5s"></div>
+          <div class="mock-bar" style="--h:60%; --delay:.6s"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AUTH CALLBACK / LOADING ===== -->
+  <section id="loadingScreen" class="screen">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <p id="loadingText">Authenticating...</p>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section id="dashboard" class="screen">
+
+    <!-- KPI row -->
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" id="sessionSearch" placeholder="Search sessions..." />
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btnRefresh">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A8 8 0 1 0 19.73 13H17.7A6 6 0 1 1 12 6a5.93 5.93 0 0 1 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- Main grid -->
+    <div class="dashboard-grid">
+
+      <!-- Sessions list -->
+      <div class="card card-sessions">
+        <div class="card-header">
+          <h2>Sessions</h2>
+          <span class="badge" id="sessionCount">0</span>
+        </div>
+        <div id="sessionList" class="session-list"></div>
+      </div>
+
+      <!-- Score trend chart -->
+      <div class="card card-trend">
+        <div class="card-header">
+          <h2>Average Score Trend</h2>
+          <div class="legend" id="trendLegend"></div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartTrend"></canvas>
+        </div>
+      </div>
+
+      <!-- Accuracy per question -->
+      <div class="card card-accuracy">
+        <div class="card-header">
+          <h2>Question Accuracy</h2>
+          <span class="card-sub" id="accuracySession">- select a session</span>
+        </div>
+        <div class="chart-wrap chart-wrap-bar">
+          <canvas id="chartAccuracy"></canvas>
+        </div>
+      </div>
+
+      <!-- Top players -->
+      <div class="card card-players">
+        <div class="card-header">
+          <h2>Top Players</h2>
+          <span class="card-sub">Overall ranking</span>
+        </div>
+        <div id="playerList" class="player-list"></div>
+      </div>
+
+      <!-- Score distribution -->
+      <div class="card card-dist">
+        <div class="card-header">
+          <h2>Score Distribution</h2>
+          <span class="card-sub" id="distSession">all sessions</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartDist"></canvas>
+        </div>
+      </div>
+
+      <!-- Participation rate -->
+      <div class="card card-participation">
+        <div class="card-header">
+          <h2>Participation</h2>
+          <span class="card-sub">Players per session</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartParticipation"></canvas>
+        </div>
+      </div>
+
+      <!-- Momentum area -->
+      <div class="card card-momentum">
+        <div class="card-header">
+          <h2>Learning Momentum</h2>
+          <span class="card-sub">Rolling average score</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartMomentum"></canvas>
+        </div>
+      </div>
+
+      <!-- Weekday sessions -->
+      <div class="card card-weekdays">
+        <div class="card-header">
+          <h2>Session Rhythm</h2>
+          <span class="card-sub">Sessions by weekday</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartWeekdays"></canvas>
+        </div>
+      </div>
+
+      <!-- Session quality radar -->
+      <div class="card card-radar">
+        <div class="card-header">
+          <h2>Session Quality Radar</h2>
+          <span class="card-sub" id="radarSession">- select a session</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartRadar"></canvas>
+        </div>
+      </div>
+
+      <!-- Performance map -->
+      <div class="card card-perfmap">
+        <div class="card-header">
+          <h2>Performance Map</h2>
+          <span class="card-sub">Accuracy vs average score</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartPerfMap"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
